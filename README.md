@@ -34,21 +34,24 @@ This project assumes that the Edge devices has a runnning data collection device
 
 
 ## Project Structure
+
+```text
 CP Code/
-├── Frontend/              # FastAPI backend and database query logic
-│   ├── main.py           # API routes and page rendering
-│   ├── influxclient.py   # InfluxDB query functions
-│   ├── sqldb.py          # SQLite metadata functions
-│   ├── config.py         # Environment variable loading
-│   └── templates/         # Frontend HTML pages
-│   	├── main.html          # Main monitoring dashboard
-│   	└── history_chart.html # Historical chart dashboard
-├── Database to Broker/      # RabbitMQ consumer for telemetry ingestion
-│   ├── Consumer.py          # Consumes telemetry messages and writes to InfluxDB
-│   └── InfluxInteraction.py #InfluxDB write functions
-├── Edge devices/           #  RabbitMQ Publisher for telemetry data
-│   └── RabbitMQPublisher.py # Publish Data to RabbitMQ Broker
-└── README.md             # Project overview and setup guide
+├── Frontend/                    # FastAPI backend and frontend templates
+│   ├── main.py                  # API routes and page rendering
+│   ├── influxclient.py          # InfluxDB query functions
+│   ├── sqldb.py                 # SQLite metadata functions
+│   ├── config.py                # Environment variable loading
+│   └── templates/               # Frontend HTML pages
+│       ├── main.html            # Main monitoring dashboard
+│       └── history_chart.html   # Historical chart dashboard
+├── Database to Broker/          # RabbitMQ consumer for telemetry ingestion
+│   ├── Consumer.py              # Consumes telemetry messages and writes to InfluxDB
+│   └── InfluxInteraction.py     # InfluxDB write functions
+├── Edge devices/                # RabbitMQ publisher for telemetry data
+│   └── RabbitMQPublisher.py     # Publishes data to the RabbitMQ broker
+└── README.md                    # Project overview and setup guide
+```
 
 ## Installation
 1. Clone the repository.
