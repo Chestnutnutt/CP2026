@@ -1,0 +1,6 @@
+INFLUX_URL=http://XXX.XXX.XXX.XXX
+INFLUX_TOKEN="Token from influx"
+INFLUX_ORG="Influx Organisation"
+POWERMETER_BUCKET="Influx bucket name"
+SERVER_BUCKET="Influx bucket name"
+MEASUREMENT="sensor data"

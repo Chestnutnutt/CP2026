@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Site Data</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    .site-header {
+      height: 64px;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      color: #e5e7eb;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+
+    .nav-btn.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+
+    .page-content {
+      padding: 20px;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      color: #f9fafb;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    select, input {
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #374151;
+      border-radius: 10px;
+      background: #0f172a;
+      color: #f9fafb;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .card {
+      border: 1px solid #374151;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 16px;
+      background: #1f2937;
+      box-shadow: none;
+      color: #f9fafb;
+    }
+
+    .muted {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    .error {
+      color: #fca5a5;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+
+    .history-shell {
+      margin-top: 16px;
+      position: relative;
+    }
+
+    .history-tabs-wrap {
+      position: relative;
+      z-index: 5;
+      padding: 0 14px;
+      margin-bottom: -2px;
+    }
+
+    .history-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f9fafb;
+      margin-bottom: 4px;
+    }
+
+    .history-section-subtitle {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .tf-tabbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    .tf-tab-btn {
+      appearance: none;
+      border: 1px solid #374151;
+      border-bottom: none;
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 10px 22px;
+      border-radius: 20px 20px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      top: 2px;
+      z-index: 6;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .tf-tab-btn:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+
+    .tf-tab-btn.active {
+      background: #1f2937;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .history-section {
+      position: relative;
+      border: 1px solid #374151;
+      border-radius: 18px;
+      background: #1f2937;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .history-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 18px;
+      background: #1f2937;
+      z-index: 1;
+    }
+
+    .history-section-body {
+      position: relative;
+      z-index: 2;
+      padding: 16px;
+      background: #1f2937;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .panel-card {
+      border: 1px solid #374151;
+      border-radius: 14px;
+      padding: 16px;
+      background: #111827;
+      box-shadow: none;
+    }
+
+    .history-section-body > .panel-card {
+      margin-top: 16px;
+    }
+
+    .chart-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #chartFreq, #chartTemp,
+    #chartCurrent, #chartVoltage, #chartPower {
+      height: 380px;
+      width: 100%;
+    }
+
+    .stats-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      background: #0f172a;
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 420px;
+    }
+
+    .stats-table thead {
+      background: #111827;
+    }
+
+    .stats-table th,
+    .stats-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #374151;
+      font-size: 14px;
+    }
+
+    .stats-table th {
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    .stats-table td {
+      color: #f9fafb;
+    }
+
+    .stats-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .series-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .series-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .empty-stat {
+      color: #94a3b8;
+    }
+
+    @media (max-width: 1000px) {
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #chartFreq, #chartTemp,
+      #chartCurrent, #chartVoltage, #chartPower {
+        height: 340px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="brand">LVMS Dashboard</div>
+    <nav class="nav-links">
+      <a href="/main" class="nav-btn">Main</a>
+      <a href="/history" class="nav-btn active">History</a>
+    </nav>
+  </header>
+
+  <div class="page-content">
+    <h2>Historical Site Data</h2>
+    <div class="muted">
+      This page loads chart series and summary stats separately.
+    </div>
+
+    <div class="card">
+    <div class="row">
+      <label>
+        Location
+        <select id="locationSelect"></select>
+      </label>
+
+      <label>
+        Start (local time)
+        <input id="startInput" type="datetime-local" />
+      </label>
+
+      <label>
+        End (local time)
+        <input id="endInput" type="datetime-local" />
+      </label>
+    </div>
+
+    <div id="meta" class="muted" style="margin-top:10px;"></div>
+    <div id="error" class="error"></div>
+  </div>
+
+  <div class="history-shell">
+    <div class="history-tabs-wrap">
+      <div class="history-section-title">Transformers</div>
+      <div class="history-section-subtitle">Choose which transformer to display</div>
+      <div id="tfTabs" class="tf-tabbar"></div>
+    </div>
+
+    <div class="history-section">
+      <div class="history-section-body">
+        <div class="panel-grid">
+          <div class="panel-card">
+            <div class="chart-wrap">
+              <div id="chartFreq"></div>
+              <div class="stats-table-wrap">
+                <table class="stats-table">
+                  <thead>
+                    <tr>
+                      <th>Series</th>
+                      <th>Max</th>
+                      <th>Avg</th>
+                      <th>Latest</th>
+                    </tr>
+                  </thead>
+                  <tbody id="statsFreqBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="chart-wrap">
+              <div id="chartTemp"></div>
+              <div class="stats-table-wrap">
+                <table class="stats-table">
+                  <thead>
+                    <tr>
+                      <th>Series</th>
+                      <th>Max</th>
+                      <th>Avg</th>
+                      <th>Latest</th>
+                    </tr>
+                  </thead>
+                  <tbody id="statsTempBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="chart-wrap">
+            <div id="chartCurrent"></div>
+            <div class="stats-table-wrap">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th>Series</th>
+                    <th>Max</th>
+                    <th>Avg</th>
+                    <th>Latest</th>
+                  </tr>
+                </thead>
+                <tbody id="statsCurrentBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="chart-wrap">
+            <div id="chartVoltage"></div>
+            <div class="stats-table-wrap">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th>Series</th>
+                    <th>Max</th>
+                    <th>Avg</th>
+                    <th>Latest</th>
+                  </tr>
+                </thead>
+                <tbody id="statsVoltageBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="chart-wrap">
+            <div id="chartPower"></div>
+            <div class="stats-table-wrap">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th>Series</th>
+                    <th>Max</th>
+                    <th>Avg</th>
+                    <th>Latest</th>
+                  </tr>
+                </thead>
+                <tbody id="statsPowerBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+<script>
+  const el = (id) => document.getElementById(id);
+
+  function setError(msg) { el("error").textContent = msg || ""; }
+  function setMeta(msg) { el("meta").textContent = msg || ""; }
+
+  async function apiGet(url) {
+    const res = await fetch(url);
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+
+    if (!res.ok) {
+      throw new Error(
+        `HTTP ${res.status} ${res.statusText}\n` +
+        (typeof data === "string" ? data : JSON.stringify(data, null, 2))
+      );
+    }
+    return data;
+  }
+
+  function getPresetLocationFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("location");
+  }
+
+  function fillSelect(selectEl, values, placeholder = "-- select --") {
+    selectEl.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = placeholder;
+    selectEl.appendChild(opt0);
+
+    for (const v of values) {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function toDatetimeLocalValue(d) {
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}` +
+           `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function datetimeLocalToISOZ(value) {
+    return new Date(value).toISOString();
+  }
+
+  function formatValue(v, unit = "", dp = 2) {
+    if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+    return `${Number(v).toFixed(dp)}${unit}`;
+  }
+
+  function renderStatsTable(tbodyId, rows, statsMap, unit = "") {
+    const tbody = el(tbodyId);
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    if (!rows || rows.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-stat">No data</td>
+        </tr>
+      `;
+      return;
+    }
+
+    rows.forEach(row => {
+      const s = statsMap?.[row.label] || {};
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>
+          <span class="series-chip">
+            <span class="series-dot" style="background:${row.color};"></span>
+            ${row.label}
+          </span>
+        </td>
+        <td>${formatValue(s.max, unit)}</td>
+        <td>${formatValue(s.avg, unit)}</td>
+        <td>${formatValue(s.latest, unit)}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  let activeTfId = null;
+
+  function renderTfTabs(tfIds) {
+    const container = el("tfTabs");
+    container.innerHTML = "";
+    activeTfId = null;
+
+    tfIds.forEach((tf, idx) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = `Transformer ${idx + 1}`;
+      btn.className = "tf-tab-btn";
+      btn.dataset.tfId = tf;
+
+      if (idx === 0) {
+        btn.classList.add("active");
+        activeTfId = tf;
+      }
+
+      btn.addEventListener("click", () => {
+        container.querySelectorAll(".tf-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeTfId = tf;
+        reloadIfPossible();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  const chartFreq    = echarts.init(el("chartFreq"));
+  const chartTemp    = echarts.init(el("chartTemp"));
+  const chartCurrent = echarts.init(el("chartCurrent"));
+  const chartVoltage = echarts.init(el("chartVoltage"));
+  const chartPower   = echarts.init(el("chartPower"));
+
+  function baseOption(title, legendNames, yAxisName) {
+    return {
+      animation: false,
+      backgroundColor: "transparent",
+
+      title: {
+        text: title,
+        left: "center",
+        top: 10,
+        textStyle: {
+          color: "#f9fafb",
+          fontSize: 20,
+          fontWeight: 700
+        }
+      },
+
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "#0f172a",
+        borderColor: "#374151",
+        textStyle: { color: "#f9fafb" }
+      },
+
+      legend: {
+        data: legendNames,
+        top: 42,
+        left: "center",
+        orient: "horizontal",
+        itemGap: 18,
+        textStyle: {
+          color: "#cbd5e1",
+          fontSize: 13
+        }
+      },
+
+      toolbox: {
+        top: 10,
+        right: 10,
+        iconStyle: {
+          borderColor: "#cbd5e1"
+        },
+        emphasis: {
+          iconStyle: {
+            borderColor: "#ffffff"
+          }
+        },
+        feature: { saveAsImage: {} }
+      },
+
+      grid: {
+        left: 90,
+        right: 30,
+        top: 95,
+        bottom: 95,
+        containLabel: true
+      },
+
+      xAxis: {
+        type: "time",
+        name: "Time",
+        nameLocation: "middle",
+        nameGap: 38,
+        nameTextStyle: {
+          color: "#cbd5e1",
+          fontSize: 13
+        },
+        axisLabel: {
+          color: "#cbd5e1",
+          margin: 14
+        },
+        axisLine: {
+          lineStyle: { color: "#4b5563" }
+        },
+        splitLine: {
+          lineStyle: { color: "#1f2937" }
+        }
+      },
+
+      yAxis: {
+        type: "value",
+        scale: true,
+        name: yAxisName,
+        nameLocation: "middle",
+        nameGap: 62,
+        nameTextStyle: {
+          color: "#cbd5e1",
+          fontSize: 13
+        },
+        axisLabel: {
+          color: "#cbd5e1",
+          margin: 14
+        },
+        splitLine: {
+          lineStyle: { color: "#374151" }
+        },
+        axisLine: {
+          lineStyle: { color: "#4b5563" }
+        }
+      },
+
+      dataZoom: [
+        {
+          type: "inside",
+          xAxisIndex: 0
+        },
+        {
+          type: "slider",
+          xAxisIndex: 0,
+          bottom: 22,
+          height: 24,
+          borderColor: "#374151",
+          backgroundColor: "#111827",
+          fillerColor: "rgba(59,130,246,0.22)",
+          textStyle: { color: "#cbd5e1" }
+        }
+      ],
+
+      series: legendNames.map(name => ({
+        name,
+        type: "line",
+        clip: false,
+        showSymbol: false,
+        emphasis: { focus: "none" },
+        data: []
+      }))
+    };
+  }
+
+  chartFreq.setOption(baseOption("Frequency", ["freq"], "Frequency (Hz)"));
+  chartTemp.setOption(baseOption("CPU Temperature", ["temp"], "CPU Temp (°C)"));
+  chartCurrent.setOption(baseOption("Current", ["ia","ib","ic"], "Current (A)"));
+  chartVoltage.setOption(baseOption("Voltage", ["va","vb","vc"], "Voltage (V)"));
+  chartPower.setOption(baseOption("Power", ["pa","pb","pc"], "Power (kW)"));
+
+  window.addEventListener("resize", () => {
+    chartFreq.resize();
+    chartTemp.resize();
+    chartCurrent.resize();
+    chartVoltage.resize();
+    chartPower.resize();
+  });
+
+  async function loadLocations() {
+    const data = await apiGet("/api/locations");
+    fillSelect(el("locationSelect"), data.locations || []);
+  }
+
+  async function loadTransformersAndAutoLoad(location) {
+    const data = await apiGet(
+      `/api/locations/${encodeURIComponent(location)}/transformers`
+    );
+    const tfIds = data.transformers || [];
+    renderTfTabs(tfIds);
+
+    if (tfIds.length > 0) {
+      reloadIfPossible();
+    }
+  }
+
+  async function loadRangeMulti(location, tf_id, startISO, endISO, fields) {
+    const fieldParam = fields.join(",");
+    const url =
+      `/api/data/range_multi?location=${encodeURIComponent(location)}` +
+      `&tf_id=${encodeURIComponent(tf_id)}` +
+      `&fields=${encodeURIComponent(fieldParam)}` +
+      `&start=${encodeURIComponent(startISO)}` +
+      `&end=${encodeURIComponent(endISO)}`;
+    return apiGet(url);
+  }
+
+  async function loadRangeMultiStats(location, tf_id, startISO, endISO, fields) {
+    const fieldParam = fields.join(",");
+    const url =
+      `/api/data/range_multi_stats?location=${encodeURIComponent(location)}` +
+      `&tf_id=${encodeURIComponent(tf_id)}` +
+      `&fields=${encodeURIComponent(fieldParam)}` +
+      `&start=${encodeURIComponent(startISO)}` +
+      `&end=${encodeURIComponent(endISO)}`;
+    return apiGet(url);
+  }
+
+  async function refreshAllCharts(location, tf_id, startISO, endISO) {
+    const fields = [
+      "freq", "temp",
+      "ia", "ib", "ic",
+      "va", "vb", "vc",
+      "pa", "pb", "pc"
+    ];
+
+    const charts = [chartFreq, chartTemp, chartCurrent, chartVoltage, chartPower];
+    charts.forEach(c => c.showLoading("default", {
+      text: "Loading...",
+      color: "#2563eb",
+      textColor: "#cbd5e1",
+      maskColor: "rgba(17,24,39,0.78)"
+    }));
+
+    try {
+      const [data, statsResp] = await Promise.all([
+        loadRangeMulti(location, tf_id, startISO, endISO, fields),
+        loadRangeMultiStats(location, tf_id, startISO, endISO, fields)
+      ]);
+
+      const series = data.series || {};
+      const stats = statsResp.stats || {};
+
+      const toPoints = (name) =>
+        (series[name] || []).map(p => [new Date(p.time).getTime(), p.value]);
+
+      const freqPoints = toPoints("freq");
+      const tempPoints = toPoints("temp");
+      const iaPoints   = toPoints("ia");
+      const ibPoints   = toPoints("ib");
+      const icPoints   = toPoints("ic");
+      const vaPoints   = toPoints("va");
+      const vbPoints   = toPoints("vb");
+      const vcPoints   = toPoints("vc");
+      const paPoints   = toPoints("pa");
+      const pbPoints   = toPoints("pb");
+      const pcPoints   = toPoints("pc");
+
+      setMeta(
+        `location=${data.location} | tf_id=${data.tf_id} | range=${data.start} → ${data.end} | ` +
+        `freq_pts=${freqPoints.length}, temp_pts=${tempPoints.length}, ia_pts=${iaPoints.length}`
+      );
+
+      chartFreq.setOption({
+        title: {
+          text: `${data.location} / TF ${data.tf_id} — Frequency`,
+          left: "center",
+          textStyle: { color: "#f9fafb", fontSize: 20, fontWeight: 700 }
+        },
+        legend: {
+          data: ["freq"],
+          left: "center",
+          top: 42,
+          textStyle: { color: "#cbd5e1", fontSize: 13 }
+        },
+        series: [
+          {
+            name: "freq",
+            data: freqPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#22d3ee" },
+            lineStyle: { width: 2, color: "#22d3ee" },
+            emphasis: { focus: "none" }
+          }
+        ]
+      });
+
+      chartTemp.setOption({
+        title: {
+          text: `${data.location} Raspberry Pi — CPU Temperature`,
+          left: "center",
+          textStyle: { color: "#f9fafb", fontSize: 20, fontWeight: 700 }
+        },
+        legend: {
+          data: ["temp"],
+          left: "center",
+          top: 42,
+          textStyle: { color: "#cbd5e1", fontSize: 13 }
+        },
+        series: [
+          {
+            name: "temp",
+            data: tempPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#a855f7" },
+            lineStyle: { width: 2, color: "#a855f7" },
+            emphasis: { focus: "none" }
+          }
+        ]
+      });
+
+      chartCurrent.setOption({
+        title: {
+          text: `${data.location} / TF ${data.tf_id} — Current`,
+          left: "center",
+          textStyle: { color: "#f9fafb", fontSize: 20, fontWeight: 700 }
+        },
+        legend: {
+          data: ["ia", "ib", "ic"],
+          left: "center",
+          top: 42,
+          textStyle: { color: "#cbd5e1", fontSize: 13 }
+        },
+        series: [
+          {
+            name: "ia",
+            data: iaPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#ef4444" },
+            lineStyle: { width: 2, color: "#ef4444" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "ib",
+            data: ibPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#f59e0b" },
+            lineStyle: { width: 2, color: "#f59e0b" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "ic",
+            data: icPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#3b82f6" },
+            lineStyle: { width: 2, color: "#3b82f6" },
+            emphasis: { focus: "none" }
+          }
+        ]
+      });
+
+      chartVoltage.setOption({
+        title: {
+          text: `${data.location} / TF ${data.tf_id} — Voltage`,
+          left: "center",
+          textStyle: { color: "#f9fafb", fontSize: 20, fontWeight: 700 }
+        },
+        legend: {
+          data: ["va", "vb", "vc"],
+          left: "center",
+          top: 42,
+          textStyle: { color: "#cbd5e1", fontSize: 13 }
+        },
+        series: [
+          {
+            name: "va",
+            data: vaPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#ef4444" },
+            lineStyle: { width: 2, color: "#ef4444" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "vb",
+            data: vbPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#f59e0b" },
+            lineStyle: { width: 2, color: "#f59e0b" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "vc",
+            data: vcPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#3b82f6" },
+            lineStyle: { width: 2, color: "#3b82f6" },
+            emphasis: { focus: "none" }
+          }
+        ]
+      });
+
+      chartPower.setOption({
+        title: {
+          text: `${data.location} / TF ${data.tf_id} — Power`,
+          left: "center",
+          textStyle: { color: "#f9fafb", fontSize: 20, fontWeight: 700 }
+        },
+        legend: {
+          data: ["pa", "pb", "pc"],
+          left: "center",
+          top: 42,
+          textStyle: { color: "#cbd5e1", fontSize: 13 }
+        },
+        series: [
+          {
+            name: "pa",
+            data: paPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#ef4444" },
+            lineStyle: { width: 2, color: "#ef4444" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "pb",
+            data: pbPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#f59e0b" },
+            lineStyle: { width: 2, color: "#f59e0b" },
+            emphasis: { focus: "none" }
+          },
+          {
+            name: "pc",
+            data: pcPoints,
+            type: "line",
+            showSymbol: false,
+            itemStyle: { color: "#3b82f6" },
+            lineStyle: { width: 2, color: "#3b82f6" },
+            emphasis: { focus: "none" }
+          }
+        ]
+      });
+
+      renderStatsTable("statsFreqBody", [
+        { label: "freq", color: "#22d3ee" }
+      ], stats, " Hz");
+
+      renderStatsTable("statsTempBody", [
+        { label: "temp", color: "#a855f7" }
+      ], stats, " °C");
+
+      renderStatsTable("statsCurrentBody", [
+        { label: "ia", color: "#ef4444" },
+        { label: "ib", color: "#f59e0b" },
+        { label: "ic", color: "#3b82f6" }
+      ], stats, " A");
+
+      renderStatsTable("statsVoltageBody", [
+        { label: "va", color: "#ef4444" },
+        { label: "vb", color: "#f59e0b" },
+        { label: "vc", color: "#3b82f6" }
+      ], stats, " V");
+
+      renderStatsTable("statsPowerBody", [
+        { label: "pa", color: "#ef4444" },
+        { label: "pb", color: "#f59e0b" },
+        { label: "pc", color: "#3b82f6" }
+      ], stats, " kW");
+
+    } catch (e) {
+      setError(e.message);
+
+      renderStatsTable("statsFreqBody", [], {}, " Hz");
+      renderStatsTable("statsTempBody", [], {}, " °C");
+      renderStatsTable("statsCurrentBody", [], {}, " A");
+      renderStatsTable("statsVoltageBody", [], {}, " V");
+      renderStatsTable("statsPowerBody", [], {}, " kW");
+    } finally {
+      charts.forEach(c => c.hideLoading());
+    }
+  }
+
+  function reloadIfPossible() {
+    const loc = el("locationSelect").value;
+    const startVal = el("startInput").value;
+    const endVal   = el("endInput").value;
+    if (!loc || !activeTfId || !startVal || !endVal) return;
+    const startISO = datetimeLocalToISOZ(startVal);
+    const endISO   = datetimeLocalToISOZ(endVal);
+    refreshAllCharts(loc, activeTfId, startISO, endISO);
+  }
+
+  el("locationSelect").addEventListener("change", async () => {
+    setError("");
+    setMeta("");
+    el("tfTabs").innerHTML = "";
+    activeTfId = null;
+    const loc = el("locationSelect").value;
+    if (!loc) return;
+    try {
+      await loadTransformersAndAutoLoad(loc);
+    } catch (e) {
+      setError(e.message);
+    }
+  });
+
+  el("startInput").addEventListener("change", reloadIfPossible);
+  el("endInput").addEventListener("change", reloadIfPossible);
+
+  (async function init() {
+    try {
+      const now = new Date();
+      const past24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      el("endInput").value = toDatetimeLocalValue(now);
+      el("startInput").value = toDatetimeLocalValue(past24h);
+
+      await loadLocations();
+
+      const presetLocation = getPresetLocationFromUrl();
+
+      if (presetLocation) {
+        el("locationSelect").value = presetLocation;
+        await loadTransformersAndAutoLoad(presetLocation);
+        setMeta(`Loaded ${presetLocation} from previous page.`);
+      } else {
+        setMeta("Select a location; Transformer 1 will load automatically and charts update when you change the date/time.");
+      }
+    } catch (e) {
+      setError(e.message);
+    }
+  })();
+</script>
+</body>
+</html>
